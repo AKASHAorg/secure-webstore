@@ -8,14 +8,23 @@ The IndexedDB wrapper used internally is [idb-keyval](https://github.com/jakearc
 
 ## Usage
 
-### set:
+### Initialize
+
+The init step takes care of key derivation and setting up the encryption/decription key.
 
 ```js
 const Store = require('secure-store')
 
 const store = new Store('some-store-name', 'super-secure-passphrase')
-await store.init()
 
+store.init().then(() => {
+  // store is ready
+})
+```
+
+### set:
+
+```js
 store.set('hello', 'world')
 ```
 
