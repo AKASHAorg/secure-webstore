@@ -1,0 +1,20 @@
+{
+    "name": "secure-store",
+    "version": "1.0.0",
+    "description": "Secure IndexedDB store using encryption",
+    "main": "dist/secure-store.js",
+    "module": "src/index.js",
+    "scripts": {
+        "build": "webpack -p"
+    },
+    "dependencies": {
+        "idb-keyval": "^3.2.0"
+    },
+    "devDependencies": {
+        "babel": "^6.23.0",
+        "standard": "^13.1.0",
+        "webpack": "^4.39.2",
+        "webpack-cli": "^3.3.6"
+    },
+    "author": "AKASHA"
+}
