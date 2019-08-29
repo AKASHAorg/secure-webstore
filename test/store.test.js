@@ -111,8 +111,11 @@ describe('Store', function () {
 
     it('Should successfully init the same store with the updated passowrd', async () => {
       const store = new Store(storeName, newPass)
-      await store.init()
-
+      try {
+        await store.init()
+      } catch (e) {
+        console.log(e)
+      }
       const data = { foo: 'bar' }
       const dec = await store.get('one')
       chai.assert.deepEqual(dec, data)
@@ -120,7 +123,11 @@ describe('Store', function () {
 
     it('Should successfully list all keys in the store', async () => {
       const store = new Store(storeName, newPass)
-      await store.init()
+      try {
+        await store.init()
+      } catch (e) {
+        console.log(e)
+      }
 
       const items = await store.keys() // [ '__key', 'one' ]
       chai.assert.equal(items.length, 2)
@@ -128,7 +135,11 @@ describe('Store', function () {
 
     it('Should successfully delete a non-existent key from the store', async () => {
       const store = new Store(storeName, newPass)
-      await store.init()
+      try {
+        await store.init()
+      } catch (e) {
+        console.log(e)
+      }
 
       await store.del('two')
 
@@ -138,7 +149,11 @@ describe('Store', function () {
 
     it('Should successfully delete a key from the store', async () => {
       const store = new Store(storeName, newPass)
-      await store.init()
+      try {
+        await store.init()
+      } catch (e) {
+        console.log(e)
+      }
 
       await store.del('one')
 
@@ -148,7 +163,11 @@ describe('Store', function () {
 
     it('Should successfully clear the store', async () => {
       const store = new Store(storeName, newPass)
-      await store.init()
+      try {
+        await store.init()
+      } catch (e) {
+        console.log(e)
+      }
 
       await store.clear()
 
