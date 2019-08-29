@@ -1,7 +1,8 @@
 {
     "name": "secure-store",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "Secure IndexedDB store using encryption",
+    "author": "Andrei Sambra",
     "main": "dist/secure-store.js",
     "module": "src/index.js",
     "scripts": {
@@ -15,6 +16,5 @@
         "standard": "^13.1.0",
         "webpack": "^4.39.2",
         "webpack-cli": "^3.3.6"
-    },
-    "author": "AKASHA"
+    }
 }
