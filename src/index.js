@@ -18,16 +18,16 @@ class Store {
   }
 
   async init () {
-    let encryptedKey = await idb.get('__key', this.store)
-    // generate a new key for the user if no key exists (empty store)
-    if (!encryptedKey) {
-      encryptedKey = await crypto.genEncryptedMasterKey(this.passphrase)
-      // store the new key since it's the first time
-      await idb.set('__key', encryptedKey, this.store)
-    }
-    // decrypt key so we can use it during this session
-    this.encMasterKey = encryptedKey
     try {
+      let encryptedKey = await idb.get('__key', this.store)
+      // generate a new key for the user if no key exists (empty store)
+      if (!encryptedKey) {
+        encryptedKey = await crypto.genEncryptedMasterKey(this.passphrase)
+        // store the new key since it's the first time
+        await idb.set('__key', encryptedKey, this.store)
+      }
+      // decrypt key so we can use it during this session
+      this.encMasterKey = encryptedKey
       this.key = await crypto.decryptMasterKey(this.passphrase, this.encMasterKey)
     } catch (e) {
       throw new Error(e.message)
