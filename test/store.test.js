@@ -145,16 +145,6 @@ describe('Store', function () {
 
       const dec = await store.get('one')
       chai.assert.deepEqual(dec, data)
-
-      const sameStore = new Store(storeName, newPass)
-      await sameStore.init()
-
-      // try {
-      //   const sameData = await sameStore.get('one')
-      //   chai.assert.deepEqual(sameData, data)
-      // } catch (e) {
-      //   console.log(e)
-      // }
     })
   })
 })
