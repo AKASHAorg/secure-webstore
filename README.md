@@ -10,7 +10,7 @@ The IndexedDB wrapper used internally is [idb-keyval](https://github.com/jakearc
 
 ### Initialize
 
-The init step takes care of key derivation and setting up the encryption/decription key.
+The init step takes care of key derivation and setting up the encryption/decryption key.
 
 ```js
 const Store = require('secure-store')
@@ -64,6 +64,14 @@ store.del('hello')
 
 ```js
 store.clear()
+```
+
+### updatePassphrase:
+
+Update the passphrase that is used for key derivation. The encryption key used for data will not be affected, just the key that protects it.
+
+```js
+store.updatePassphrase(oldPass, newPass)
 ```
 
 That's it!

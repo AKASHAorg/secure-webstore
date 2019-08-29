@@ -3,13 +3,15 @@
     "version": "0.1.0",
     "description": "Secure IndexedDB store using encryption",
     "author": "Andrei Sambra",
+    "license": "MIT",
     "main": "dist/secure-store.js",
     "module": "src/index.js",
     "scripts": {
         "build": "webpack -p"
     },
     "dependencies": {
-        "idb-keyval": "^3.2.0"
+        "idb-keyval": "^3.2.0",
+        "web-crypto": "git+https://github.com/deiu/web-crypto"
     },
     "devDependencies": {
         "babel": "^6.23.0",
