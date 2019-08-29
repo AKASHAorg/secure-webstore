@@ -117,8 +117,12 @@ describe('Store', function () {
         console.log(e)
       }
       const data = { foo: 'bar' }
-      const dec = await store.get('one')
-      chai.assert.deepEqual(dec, data)
+      try {
+        const dec = await store.get('one')
+        chai.assert.deepEqual(dec, data)
+      } catch (e) {
+        console.log(e)
+      }
     }).timeout(3000)
 
     it('Should successfully list all keys in the store', async () => {
