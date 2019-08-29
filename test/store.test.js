@@ -107,7 +107,7 @@ describe('Store', function () {
       const data = { foo: 'bar' }
       const dec = await store.get('one')
       chai.assert.deepEqual(dec, data)
-    })
+    }).timeout(1000)
 
     it('Should successfully init the same store with the updated passowrd', async () => {
       const store = new Store(storeName, newPass)
