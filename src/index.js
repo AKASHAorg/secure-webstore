@@ -10,7 +10,7 @@ class Store {
     */
   constructor (storeName, passphrase) {
     if (!storeName || !passphrase) {
-      throw new Error('Both username and passphrase are required')
+      throw new Error('Store name and passphrase required')
     }
     // init store
     this.store = new idb.Store(storeName, storeName)
@@ -18,26 +18,30 @@ class Store {
   }
 
   async init () {
+    let encryptedKey = await idb.get('__key', this.store)
+    // generate a new key for the user if no key exists (empty store)
+    if (!encryptedKey) {
+      encryptedKey = await crypto.genEncryptedMasterKey(this.passphrase)
+      // store the new key since it's the first time
+      await idb.set('__key', encryptedKey, this.store)
+    }
+    // decrypt key so we can use it during this session
+    this.encMasterKey = encryptedKey
     try {
-      let encryptedKey = await idb.get('__key', this.store)
-      // generate a new key for the user if no key exists (empty store)
-      if (!encryptedKey) {
-        encryptedKey = await crypto.genEncryptedMasterKey(this.passphrase)
-        // store the new key since it's the first time
-        await idb.set('__key', encryptedKey, this.store)
-      }
-      // decrypt key so we can use it during this session
-      this.encMasterKey = encryptedKey
       this.key = await crypto.decryptMasterKey(this.passphrase, this.encMasterKey)
     } catch (e) {
-      console.log(e)
+      throw new Error(e.message)
     }
   }
 
   async updatePassphrase (oldPass, newPass) {
-    const encryptedKey = await crypto.updatePassphraseKey(oldPass, newPass, this.encMasterKey)
-    await idb.set('__key', encryptedKey, this.store)
-    this.encMasterKey = encryptedKey
+    try {
+      const encryptedKey = await crypto.updatePassphraseKey(oldPass, newPass, this.encMasterKey)
+      await idb.set('__key', encryptedKey, this.store)
+      this.encMasterKey = encryptedKey
+    } catch (e) {
+      throw new Error(e.message)
+    }
   }
 
   async set (key, val) {
@@ -52,6 +56,9 @@ class Store {
         val = await idb.get(key, this.store)
       } catch (e) {
         reject(e)
+      }
+      if (!val) {
+        return resolve(val) // undefined
       }
       // decrypt data before returning it
       resolve(await crypto.decrypt(this.key, val))
@@ -72,6 +79,5 @@ class Store {
 }
 
 module.exports = {
-  Store,
-  crypto
+  Store
 }
