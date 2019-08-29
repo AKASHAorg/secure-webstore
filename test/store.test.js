@@ -5,7 +5,7 @@ const Store = window.SecureStore.Store
 
 describe('Store', function () {
   context('API', async () => {
-    const storeName = 'foo'
+    const storeName = 'test-store'
     const passphrase = 'password'
     const newPass = 'new password'
     const data = { foo: 'bar' }
@@ -145,15 +145,13 @@ describe('Store', function () {
 
       const dec = await store.get('one')
       chai.assert.deepEqual(dec, data)
-    })
 
-    it('Should successfully init the same store with the updated passowrd', async () => {
-      const store = new Store(storeName, newPass)
-      await store.init()
+      const sameStore = new Store(storeName, newPass)
+      await sameStore.init()
 
       try {
-        const dec = await store.get('one')
-        chai.assert.deepEqual(dec, data)
+        const sameData = await sameStore.get('one')
+        chai.assert.deepEqual(sameData, data)
       } catch (e) {
         console.log(e)
       }
