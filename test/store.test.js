@@ -8,6 +8,7 @@ describe('Store', function () {
     const storeName = 'foo'
     const passphrase = 'password'
     const newPass = 'new password'
+    const data = { foo: 'bar' }
 
     it('Should fail to initialize if store name or passphrase are not provided', async () => {
       let s
@@ -60,7 +61,6 @@ describe('Store', function () {
       const store = new Store(storeName, passphrase)
       await store.init()
 
-      const data = { foo: 'bar' }
       await store.set('one', data)
 
       const _store = new window.idbKeyval.Store(storeName, storeName)
@@ -80,9 +80,46 @@ describe('Store', function () {
       const store = new Store(storeName, passphrase)
       await store.init()
 
-      const data = { foo: 'bar' }
       const dec = await store.get('one')
       chai.assert.deepEqual(dec, data)
+    })
+
+    it('Should successfully list all keys in the store', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      const items = await store.keys() // [ '__key', 'one' ]
+      chai.assert.equal(items.length, 2)
+    })
+
+    it('Should successfully delete a non-existent key from the store', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      await store.del('two')
+
+      const items = await store.keys() // [ '__key', 'one ]
+      chai.assert.equal(items.length, 2)
+    })
+
+    it('Should successfully delete a key from the store', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      await store.del('one')
+
+      const items = await store.keys() // [ '__key' ]
+      chai.assert.equal(items.length, 1)
+    })
+
+    it('Should successfully clear the store', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      await store.clear()
+
+      const items = await store.keys() // []
+      chai.assert.equal(items.length, 0)
     })
 
     it('Should fail to updatePassphrase with wrong (previous) password', async () => {
@@ -102,81 +139,24 @@ describe('Store', function () {
       const store = new Store(storeName, passphrase)
       await store.init()
 
+      await store.set('one', data)
+
       await store.updatePassphrase(passphrase, newPass)
 
-      const data = { foo: 'bar' }
       const dec = await store.get('one')
       chai.assert.deepEqual(dec, data)
-    }).timeout(1000)
+    })
 
     it('Should successfully init the same store with the updated passowrd', async () => {
       const store = new Store(storeName, newPass)
-      try {
-        await store.init()
-      } catch (e) {
-        console.log(e)
-      }
-      const data = { foo: 'bar' }
+      await store.init()
+
       try {
         const dec = await store.get('one')
         chai.assert.deepEqual(dec, data)
       } catch (e) {
         console.log(e)
       }
-    }).timeout(3000)
-
-    it('Should successfully list all keys in the store', async () => {
-      const store = new Store(storeName, newPass)
-      try {
-        await store.init()
-      } catch (e) {
-        console.log(e)
-      }
-
-      const items = await store.keys() // [ '__key', 'one' ]
-      chai.assert.equal(items.length, 2)
-    })
-
-    it('Should successfully delete a non-existent key from the store', async () => {
-      const store = new Store(storeName, newPass)
-      try {
-        await store.init()
-      } catch (e) {
-        console.log(e)
-      }
-
-      await store.del('two')
-
-      const items = await store.keys() // [ '__key', 'one ]
-      chai.assert.equal(items.length, 2)
-    })
-
-    it('Should successfully delete a key from the store', async () => {
-      const store = new Store(storeName, newPass)
-      try {
-        await store.init()
-      } catch (e) {
-        console.log(e)
-      }
-
-      await store.del('one')
-
-      const items = await store.keys() // [ '__key' ]
-      chai.assert.equal(items.length, 1)
-    })
-
-    it('Should successfully clear the store', async () => {
-      const store = new Store(storeName, newPass)
-      try {
-        await store.init()
-      } catch (e) {
-        console.log(e)
-      }
-
-      await store.clear()
-
-      const items = await store.keys() // []
-      chai.assert.equal(items.length, 0)
     })
   })
 })
