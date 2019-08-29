@@ -1,5 +1,7 @@
 # Secure-store
 
+[![Build Status](https://travis-ci.org/deiu/secure-store.svg?branch=master)](https://travis-ci.org/deiu/secure-store)
+
 This is a secure, promise-based keyval store that encrypts data stored in IndexedDB.
 
 The symmetric encryption key is derived from the provided passphrase, and then stored in an encrypted form within the provided store name. The encryption key is only used in memory and never revealed.
