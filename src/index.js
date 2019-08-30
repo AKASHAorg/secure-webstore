@@ -79,5 +79,6 @@ class Store {
 }
 
 module.exports = {
-  Store
+  Store,
+  _idb: idb
 }
