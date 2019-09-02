@@ -1,6 +1,6 @@
 # Secure-store
 
-[![Build Status](https://travis-ci.org/deiu/secure-store.svg?branch=master)](https://travis-ci.org/deiu/secure-store)
+[![Build Status](https://travis-ci.org/AkashaProject/secure-store.svg?branch=master)](https://travis-ci.org/AkashaProject/secure-store)
 
 This is a secure, promise-based keyval store that encrypts data stored in IndexedDB.
 
