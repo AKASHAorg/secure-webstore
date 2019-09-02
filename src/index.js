@@ -13,6 +13,7 @@ class Store {
       throw new Error('Store name and passphrase required')
     }
     // init store
+    this.storeName = storeName
     this.store = new idb.Store(storeName, storeName)
     this.passphrase = passphrase
   }
@@ -75,6 +76,18 @@ class Store {
 
   clear () {
     return idb.clear(this.store)
+  }
+
+  deleteStore () {
+    return new Promise((resolve, reject) => {
+      const db = window.indexedDB.deleteDatabase(this.storeName)
+      db.onsuccess = () => {
+        resolve()
+      }
+      db.onerror = (e) => {
+        reject(e)
+      }
+    })
   }
 }
 

@@ -12,7 +12,7 @@ describe('Store', function () {
 
     it('Should fail to initialize if store name or passphrase are not provided', async () => {
       let s
-      let err = { message: '_ERROR_NOT_THROWN_' }
+      let err
       try {
         s = new Store()
       } catch (error) {
@@ -36,18 +36,18 @@ describe('Store', function () {
     })
 
     it('Should successfully initialize', async () => {
-      let err = { message: '_ERROR_NOT_THROWN_' }
+      let err
       try {
         const store = new Store(storeName, passphrase)
         await store.init()
       } catch (error) {
         err = error
       }
-      chai.assert.equal(err.message, '_ERROR_NOT_THROWN_')
+      chai.assert.isUndefined(err)
     })
 
     it('Should fail to initialize existing store with bad password', async () => {
-      let err = { message: '_ERROR_NOT_THROWN_' }
+      let err
       try {
         const s = new Store(storeName, 'foo')
         await s.init()
@@ -122,11 +122,25 @@ describe('Store', function () {
       chai.assert.equal(items.length, 0)
     })
 
+    it('Should successfully delete the store', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      const before = await window.indexedDB.databases()
+
+      await store.deleteStore()
+
+      const after = await window.indexedDB.databases()
+      console.log(store.storeName, before, after)
+
+      chai.assert.equal(after.length, before.length - 1)
+    })
+
     it('Should fail to updatePassphrase with wrong (previous) password', async () => {
       const store = new Store(storeName, passphrase)
       await store.init()
 
-      let err = { message: '_ERROR_NOT_THROWN_' }
+      let err
       try {
         await store.updatePassphrase('foo', newPass)
       } catch (error) {
