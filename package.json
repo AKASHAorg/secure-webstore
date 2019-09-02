@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "idb-keyval": "^3.2.0",
-        "web-crypto": "git+https://github.com/deiu/web-crypto"
+        "web-crypto": "git+https://github.com/AkashaProject/web-crypto"
     },
     "devDependencies": {
         "babel": "^6.23.0",
