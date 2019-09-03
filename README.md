@@ -44,7 +44,8 @@ store.set('hello', 'world')
 
 ```js
 // logs: "world"
-store.get('hello').then(val => console.log(val))
+const val = await store.get('hello')
+// console.log(val) -> "world"
 ```
 
 If there is no 'hello' key, then `val` will be `undefined`.
@@ -66,6 +67,14 @@ store.del('hello')
 
 ```js
 store.clear()
+```
+
+### destroy:
+
+Completely remove a database.
+
+```js
+store.destroy()
 ```
 
 ### updatePassphrase:

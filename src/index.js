@@ -1,4 +1,4 @@
-const idb = require('idb-keyval')
+const idb = require('./store')
 const crypto = require('web-crypto')
 
 class Store {
@@ -13,6 +13,7 @@ class Store {
       throw new Error('Store name and passphrase required')
     }
     // init store
+    this.storeName = storeName
     this.store = new idb.Store(storeName, storeName)
     this.passphrase = passphrase
   }
@@ -29,6 +30,10 @@ class Store {
       // decrypt key so we can use it during this session
       this.encMasterKey = encryptedKey
       this.key = await crypto.decryptMasterKey(this.passphrase, this.encMasterKey)
+      // close DB connection if the window enters freeze state
+      window.addEventListener('freeze', () => {
+        this.close()
+      })
     } catch (e) {
       throw new Error(e.message)
     }
@@ -75,6 +80,23 @@ class Store {
 
   clear () {
     return idb.clear(this.store)
+  }
+
+  close () {
+    return idb.close(this.store)
+  }
+
+  destroy () {
+    return new Promise((resolve, reject) => {
+      this.close()
+      const req = window.indexedDB.deleteDatabase(this.storeName)
+      req.onsuccess = (e) => {
+        resolve(e)
+      }
+      req.onerror = (e) => {
+        reject(e)
+      }
+    })
   }
 }
 
