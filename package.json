@@ -1,10 +1,10 @@
 {
-    "name": "secure-store",
+    "name": "securestore",
     "version": "0.1.0",
     "description": "Secure IndexedDB store using encryption",
     "author": "Andrei Sambra",
     "license": "MIT",
-    "main": "dist/secure-store.js",
+    "main": "dist/securestore.js",
     "module": "src/index.js",
     "scripts": {
         "build": "webpack -p",
@@ -12,7 +12,7 @@
         "test": "npm run build && npm run test-only"
     },
     "dependencies": {
-        "web-crypto": "git+https://github.com/AkashaProject/web-crypto"
+        "easy-web-crypto": "^1.0.1"
     },
     "devDependencies": {
         "babel": "^6.23.0",
