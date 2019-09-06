@@ -1,5 +1,5 @@
 const idb = require('./store')
-const crypto = require('web-crypto')
+const crypto = require('easy-web-crypto')
 
 class Store {
   /**

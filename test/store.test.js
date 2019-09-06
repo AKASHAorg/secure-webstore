@@ -67,8 +67,8 @@ describe('Store', function () {
 
       await store.set('one', data)
 
-      const _store = new window.idbKeyval.Store(storeName, storeName)
-      const encItem = await window.idbKeyval.get('one', _store)
+      const _store = new window.SecureStore._idb.Store(storeName, storeName)
+      const encItem = await window.SecureStore._idb.get('one', _store)
       chai.assert.exists(encItem.iv)
       chai.assert.exists(encItem.ciphertext)
       await store.close()
