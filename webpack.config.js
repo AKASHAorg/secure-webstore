@@ -6,7 +6,7 @@ module.exports = {
   devtool: 'source-map',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'securestore.js',
+    filename: 'secure-webstore.js',
     library: 'SecureStore',
     libraryTarget: 'umd',
     umdNamedDefine: true

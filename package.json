@@ -1,5 +1,5 @@
 {
-    "name": "securestore",
+    "name": "secure-webstore",
     "version": "0.1.0",
     "description": "Secure IndexedDB store using encryption",
     "author": "Andrei Sambra",
