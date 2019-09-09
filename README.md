@@ -1,12 +1,12 @@
 # Secure-webstore
 
-[![Build Status](https://travis-ci.org/AkashaProject/secure-store.svg?branch=master)](https://travis-ci.org/AkashaProject/secure-store)
+[![Build Status](https://travis-ci.org/AkashaProject/secure-webstore.svg?branch=master)](https://travis-ci.org/AkashaProject/secure-webstore)
 
 This is a secure, promise-based keyval store that encrypts data stored in IndexedDB.
 
 The symmetric encryption key is derived from the provided passphrase, and then stored in an encrypted form within the provided store name. The encryption key is only used in memory and never revealed.
 
-The IndexedDB wrapper used internally is [idb-keyval](https://github.com/jakearchibald/idb-keyval/), while the cryptographic operations are handled by [web-crypto](https://github.com/AkashaProject/web-crypto).
+The IndexedDB wrapper used internally is [idb-keyval](https://github.com/jakearchibald/idb-keyval/), while the cryptographic operations are handled by [easy-web-crypto](https://github.com/AkashaProject/easy-web-crypto).
 
 ## Usage
 
