@@ -1,4 +1,4 @@
-# Secure-store
+# Secure-webstore
 
 [![Build Status](https://travis-ci.org/AkashaProject/secure-store.svg?branch=master)](https://travis-ci.org/AkashaProject/secure-store)
 
@@ -15,7 +15,7 @@ The IndexedDB wrapper used internally is [idb-keyval](https://github.com/jakearc
 The init step takes care of key derivation and setting up the encryption/decryption key.
 
 ```js
-const Store = require('secure-store')
+const Store = require('secure-webstore')
 
 const store = new Store('some-store-name', 'super-secure-passphrase')
 
@@ -92,7 +92,7 @@ That's it!
 ### Via npm
 
 ```sh
-npm install git+https://github.com/deiu/secure-store#master
+npm install --save secure-webstore
 ```
 
 ### Via `<script>`
