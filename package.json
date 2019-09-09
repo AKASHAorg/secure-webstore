@@ -1,6 +1,6 @@
 {
     "name": "secure-webstore",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Secure IndexedDB store using encryption",
     "author": "Andrei Sambra",
     "license": "MIT",
