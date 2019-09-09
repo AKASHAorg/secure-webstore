@@ -1,6 +1,6 @@
 {
     "name": "secure-webstore",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Secure IndexedDB store using encryption",
     "author": "Andrei Sambra",
     "license": "MIT",
@@ -12,8 +12,8 @@
         "secure storage"
     ],
     "repository": {
-        "type" : "git",
-        "url" : "https://github.com/AkashaProject/secure-webstore.git"
+        "type": "git",
+        "url": "https://github.com/AkashaProject/secure-webstore.git"
     },
     "main": "dist/securestore.js",
     "module": "src/index.js",
