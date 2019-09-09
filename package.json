@@ -4,6 +4,17 @@
     "description": "Secure IndexedDB store using encryption",
     "author": "Andrei Sambra",
     "license": "MIT",
+    "keywords": [
+        "indexeddb",
+        "webcrypto api",
+        "cryptography",
+        "key derivation",
+        "secure storage"
+    ],
+    "repository": {
+        "type" : "git",
+        "url" : "https://github.com/AkashaProject/secure-webstore.git"
+    },
     "main": "dist/securestore.js",
     "module": "src/index.js",
     "scripts": {
