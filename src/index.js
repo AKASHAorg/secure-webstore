@@ -55,18 +55,23 @@ class Store {
   }
 
   async get (key) {
-    return new Promise(async (resolve, reject) => {
-      let val
-      try {
-        val = await idb.get(key, this.store)
-      } catch (e) {
-        reject(e)
-      }
-      if (!val) {
-        return resolve(val) // undefined
-      }
+    let data
+    let err
+    try {
+      const val = await idb.get(key, this.store)
       // decrypt data before returning it
-      resolve(await crypto.decrypt(this.key, val))
+      data = await crypto.decrypt(this.key, val)
+    } catch (e) {
+      err = e
+    }
+    return new Promise((resolve, reject) => {
+      if (!data) {
+        return resolve(data) // can be undefined
+      }
+      if (err) {
+        return reject(err)
+      }
+      resolve(data)
     })
   }
 
@@ -97,6 +102,30 @@ class Store {
         reject(e)
       }
     })
+  }
+
+  async export () {
+    const dump = {}
+    const keys = await this.keys()
+    if (keys) {
+      for (const key of keys) {
+        const data = await idb.get(key, this.store)
+        dump[key] = data
+      }
+    }
+    return dump
+  }
+
+  async import (data) {
+    if (!data || Object.keys(data).length === 0) {
+      throw new Error('No data provided')
+    }
+    if (Object.prototype.toString.call(data) !== '[object Object]') {
+      throw new Error('Data must be a valid JSON object')
+    }
+    for (const key of Object.keys(data)) {
+      await idb.set(key, data[key], this.store)
+    }
   }
 }
 

@@ -88,6 +88,21 @@ Update the passphrase that is used for key derivation. The encryption key used f
 store.updatePassphrase(oldPass, newPass)
 ```
 
+### export:
+
+Export all (encrypted) key/vals as one JSON object.
+
+```js
+const dump = await store.export()
+```
+
+### import:
+
+```js
+// using the dump above
+store.import(dump)
+```
+
 That's it!
 
 ## Installing

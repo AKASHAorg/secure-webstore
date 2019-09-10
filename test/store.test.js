@@ -18,6 +18,7 @@ describe('Store', function () {
       } catch (error) {
         err = error
       }
+      chai.assert.isUndefined(store)
       chai.assert.equal(err.message, 'Store name and passphrase required', 'Reject if no params are provided')
 
       try {
@@ -25,6 +26,7 @@ describe('Store', function () {
       } catch (error) {
         err = error
       }
+      chai.assert.isUndefined(store)
       chai.assert.equal(err.message, 'Store name and passphrase required', 'Reject if no pass')
 
       try {
@@ -32,6 +34,7 @@ describe('Store', function () {
       } catch (error) {
         err = error
       }
+      chai.assert.isUndefined(store)
       chai.assert.equal(err.message, 'Store name and passphrase required', 'Reject if no store')
     })
 
@@ -130,6 +133,66 @@ describe('Store', function () {
 
       const items = await store.keys() // []
       chai.assert.equal(items.length, 0)
+      await store.close()
+    })
+
+    it('Should successfully export data', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      await store.set('one', data)
+
+      const dump = await store.export()
+
+      const keys = await store.keys()
+      keys.forEach(key => {
+        chai.assert.exists(Object.keys(dump), key)
+      })
+      await store.close()
+    })
+
+    it('Should fail to import data if none is provided', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      let err
+      try {
+        await store.import()
+      } catch (error) {
+        err = error
+      }
+      chai.assert.equal(err.message, 'No data provided')
+
+      try {
+        await store.import({})
+      } catch (error) {
+        err = error
+      }
+      chai.assert.equal(err.message, 'No data provided')
+
+      try {
+        await store.import('foo')
+      } catch (error) {
+        err = error
+      }
+      chai.assert.equal(err.message, 'Data must be a valid JSON object')
+
+      await store.close()
+    })
+
+    it('Should successfully import data', async () => {
+      const store = new Store(storeName, passphrase)
+      await store.init()
+
+      const keys = await store.keys()
+      const dump = await store.export()
+
+      await store.del('one')
+
+      await store.import(dump)
+
+      chai.assert.deepEqual(keys, await store.keys())
+
       await store.close()
     })
 
