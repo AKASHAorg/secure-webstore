@@ -100,4 +100,4 @@ npm install --save secure-webstore
 
 ### Via `<script>`
 
-* `dist/secure-store.js` can be directly used in browsers.
+* The `dist/secure-webstore.js` bundle can be directly used in browsers.
