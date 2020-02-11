@@ -1,6 +1,6 @@
 # Secure-webstore
 
-[![Build Status](https://travis-ci.org/AkashaProject/secure-webstore.svg?branch=master)](https://travis-ci.org/AkashaProject/secure-webstore)
+[![Build Status](https://api.travis-ci.org/AKASHAorg/secure-webstore.svg?branch=master)](https://travis-ci.org/AKASHAorg/secure-webstore)
 
 This is a secure, promise-based keyval store that encrypts data stored in IndexedDB.
 
