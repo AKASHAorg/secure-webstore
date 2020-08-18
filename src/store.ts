@@ -1,6 +1,11 @@
 // Forked from https://github.com/jakearchibald/idb-keyval/commit/ea7d507
 // Adds a function for closing the database, ala https://github.com/jakearchibald/idb-keyval/pull/65
 class Store {
+  storeName: string
+  private _dbName: string
+  private _storeName: string
+  private _dbp?: IDBDatabase
+
   constructor (dbName = 'keyval-store', storeName = 'keyval') {
     this.storeName = storeName
     this._dbName = dbName
@@ -8,21 +13,24 @@ class Store {
     this._init()
   }
 
-  _withIDBStore (type, callback) {
-    this._init()
-    return this._dbp.then(db => new Promise((resolve, reject) => {
+  async _withIDBStore <T>(type: IDBTransactionMode, callback: (store: IDBObjectStore) => T): Promise<T> {
+    const db = await this._init()
+
+    let ret: T | undefined
+    await new Promise((resolve, reject) => {
       const transaction = db.transaction(this.storeName, type)
       transaction.oncomplete = () => resolve()
       transaction.onabort = transaction.onerror = () => reject(transaction.error)
-      callback(transaction.objectStore(this.storeName))
-    }))
+      ret = callback(transaction.objectStore(this.storeName))
+    });
+    return ret!;
   }
 
-  _init () {
+  async _init () {
     if (this._dbp) {
-      return
+      return this._dbp
     }
-    this._dbp = new Promise((resolve, reject) => {
+    this._dbp = await new Promise<IDBDatabase>((resolve, reject) => {
       const openreq = window.indexedDB.open(this._dbName, 1)
       openreq.onerror = () => reject(openreq.error)
       openreq.onsuccess = () => resolve(openreq.result)
@@ -30,31 +38,25 @@ class Store {
       openreq.onupgradeneeded = () => {
         openreq.result.createObjectStore(this._storeName)
       }
-    }).then(dbp => {
-      // On close, reconnect
-      dbp.onclose = () => {
-        this._dbp = undefined
+    });
+    this._dbp.onclose = () => {
+      this._dbp = undefined
+    }
+    this._dbp.onversionchange = (e) => {
+      if (e.newVersion === null) { // an attempt is made to delete the db
+        console.log('Got delete request for db')
+        this._dbp?.close() // force close our connection to the db
       }
-      dbp.onversionchange = (e) => {
-        if (e.newVersion === null) { // an attempt is made to delete the db
-          console.log('Got delete request for db')
-          e.target.close() // force close our connection to the db
-        }
-      }
-      return dbp
-    })
+    }
+    return this._dbp
   }
 
   _close () {
-    this._init()
-    return this._dbp.then(db => {
-      db.close()
-      this._dbp = undefined
-    })
+    this._dbp?.close()
   }
 }
 
-let store
+let store: Store | undefined
 
 function getDefaultStore () {
   if (!store) {
@@ -63,20 +65,20 @@ function getDefaultStore () {
   return store
 }
 
-function get (key, store = getDefaultStore()) {
-  let req
-  return store._withIDBStore('readonly', store => {
-    req = store.get(key)
-  }).then(() => req.result)
+async function get (key: IDBValidKey | IDBKeyRange, store = getDefaultStore()) {
+  const request = await store._withIDBStore('readonly', store =>
+    store.get(key)
+  )
+  return request.result;
 }
 
-function set (key, value, store = getDefaultStore()) {
+function set (key: IDBValidKey, value: any, store = getDefaultStore()) {
   return store._withIDBStore('readwrite', store => {
     store.put(value, key)
   })
 }
 
-function del (key, store = getDefaultStore()) {
+function del (key: IDBValidKey | IDBKeyRange, store = getDefaultStore()) {
   return store._withIDBStore('readwrite', store => {
     store.delete(key)
   })
@@ -88,11 +90,11 @@ function clear (store = getDefaultStore()) {
   })
 }
 
-function keys (store = getDefaultStore()) {
-  const keys = []
+function keys (store = getDefaultStore()): Promise<IDBValidKey[]> {
   return store._withIDBStore('readonly', store => {
     // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
     // And openKeyCursor isn't supported by Safari.
+    const keys: IDBValidKey[] = [];
     (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
       if (!this.result) {
         return
@@ -100,7 +102,8 @@ function keys (store = getDefaultStore()) {
       keys.push(this.result.key)
       this.result.continue()
     }
-  }).then(() => keys)
+    return keys
+  })
 }
 
 function close (store = getDefaultStore()) {
