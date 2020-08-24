@@ -11,6 +11,8 @@ The IndexedDB wrapper used internally is [idb-keyval](https://github.com/jakearc
 while the cryptographic operations are handled by [easy-web-crypto](https://github.com/AkashaProject/easy-web-crypto),
 a zero-dependency wrapper around the [Webcrypto API](https://caniuse.com/#search=web%20crypto) available in modern browsers.
 
+Huge thanks to [@Jopie64](https://github.com/Jopie64) for Typescriptifying the source!
+
 ## Usage
 
 ### Initialize
