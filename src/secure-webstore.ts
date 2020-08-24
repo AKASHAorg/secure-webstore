@@ -1,26 +1,36 @@
-const idb = require('./store')
-const crypto = require('easy-web-crypto')
+import * as idb from './store';
+import * as crypto from 'easy-web-crypto';
+
+type Dump = Record<string | number, any>;
 
 class Store {
+  private store: idb.Store;
+  private encMasterKey?: crypto.ProtectedMasterKey;
+  private _key?: CryptoKey;
+
+  private get key(): CryptoKey {
+    if (!this._key) {
+      throw new Error('Master key not initialized')
+    }
+    return this._key;
+  }
   /**
     * Class constructor
     *
     * @param {string} user - The current user
     * @param {string} passphrase - Passphrase from which we derive the key
     */
-  constructor (storeName, passphrase) {
+  constructor (public storeName: string, private passphrase: string) {
     if (!storeName || !passphrase) {
       throw new Error('Store name and passphrase required')
     }
     // init store
-    this.storeName = storeName
     this.store = new idb.Store(storeName, storeName)
-    this.passphrase = passphrase
   }
 
   async init () {
     try {
-      let encryptedKey = await idb.get('__key', this.store)
+      let encryptedKey: crypto.ProtectedMasterKey | undefined = await idb.get('__key', this.store)
       // generate a new key for the user if no key exists (empty store)
       if (!encryptedKey) {
         encryptedKey = await crypto.genEncryptedMasterKey(this.passphrase)
@@ -29,7 +39,7 @@ class Store {
       }
       // decrypt key so we can use it during this session
       this.encMasterKey = encryptedKey
-      this.key = await crypto.decryptMasterKey(this.passphrase, this.encMasterKey)
+      this._key = await crypto.decryptMasterKey(this.passphrase, this.encMasterKey)
       // close DB connection if the window enters freeze state
       window.addEventListener('freeze', () => {
         this.close()
@@ -39,8 +49,11 @@ class Store {
     }
   }
 
-  async updatePassphrase (oldPass, newPass) {
+  async updatePassphrase (oldPass: string, newPass: string) {
     try {
+      if (!this.encMasterKey) {
+        throw new Error('No password to update set');
+      }
       const encryptedKey = await crypto.updatePassphraseKey(oldPass, newPass, this.encMasterKey)
       await idb.set('__key', encryptedKey, this.store)
       this.encMasterKey = encryptedKey
@@ -49,41 +62,30 @@ class Store {
     }
   }
 
-  async set (key, val) {
+  async set (key: IDBValidKey, val: string | object) {
     val = await crypto.encrypt(this.key, val)
     return idb.set(key, val, this.store)
   }
 
-  async get (key) {
-    let data
-    let err
-    try {
-      const val = await idb.get(key, this.store)
-      // decrypt data before returning it
-      data = await crypto.decrypt(this.key, val)
-    } catch (e) {
-      err = e
+  async get (key: IDBValidKey | IDBKeyRange) {
+    const val = await idb.get(key, this.store)
+    if (!val) {
+      // undefined data cant/doesn't need to be decrypted
+      return val;
     }
-    return new Promise((resolve, reject) => {
-      if (!data) {
-        return resolve(data) // can be undefined
-      }
-      if (err) {
-        return reject(err)
-      }
-      resolve(data)
-    })
+    // decrypt data before returning it
+    return await crypto.decrypt(this.key, val)
   }
 
-  del (key) {
+  del (key: IDBValidKey | IDBKeyRange) {
     return idb.del(key, this.store)
   }
 
-  keys () {
+  keys (): Promise<IDBValidKey[]> {
     return idb.keys(this.store)
   }
 
-  clear () {
+  clear (): Promise<void> {
     return idb.clear(this.store)
   }
 
@@ -105,10 +107,13 @@ class Store {
   }
 
   async export () {
-    const dump = {}
+    const dump: Dump = {}
     const keys = await this.keys()
     if (keys) {
       for (const key of keys) {
+        if (typeof key !== 'string' && typeof key !== 'number') {
+          continue;
+        }
         const data = await idb.get(key, this.store)
         dump[key] = data
       }
@@ -116,7 +121,7 @@ class Store {
     return dump
   }
 
-  async import (data) {
+  async import (data: Dump) {
     if (!data || Object.keys(data).length === 0) {
       throw new Error('No data provided')
     }
@@ -129,7 +134,10 @@ class Store {
   }
 }
 
-module.exports = {
+const _idb = idb;
+
+export {
+  Dump,
   Store,
-  _idb: idb
+  _idb
 }
