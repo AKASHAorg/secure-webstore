@@ -98,8 +98,8 @@ describe('Store', function () {
       const store = new Store(storeName, passphrase)
       await store.init()
 
-      const items = await store.keys() // [ '__key', 'one' ]
-      chai.assert.equal(items.length, 2)
+      const items = await store.keys() // [ 'one' ]
+      chai.assert.equal(items.length, 1)
       await store.close()
     })
 
@@ -109,8 +109,8 @@ describe('Store', function () {
 
       await store.del('two')
 
-      const items = await store.keys() // [ '__key', 'one ]
-      chai.assert.equal(items.length, 2)
+      const items = await store.keys() // [ 'one ]
+      chai.assert.equal(items.length, 1)
       await store.close()
     })
 
@@ -120,8 +120,8 @@ describe('Store', function () {
 
       await store.del('one')
 
-      const items = await store.keys() // [ '__key' ]
-      chai.assert.equal(items.length, 1)
+      const items = await store.keys() // []
+      chai.assert.equal(items.length, 0)
       await store.close()
     })
 
