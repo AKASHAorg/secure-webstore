@@ -3,6 +3,8 @@ import * as crypto from 'easy-web-crypto';
 
 type Dump = Record<string | number, any>;
 
+const encryptedKeyKey = '__key';
+
 class Store {
   private store: idb.Store;
   private encMasterKey?: crypto.ProtectedMasterKey;
@@ -30,12 +32,12 @@ class Store {
 
   async init () {
     try {
-      let encryptedKey: crypto.ProtectedMasterKey | undefined = await idb.get('__key', this.store)
+      let encryptedKey: crypto.ProtectedMasterKey | undefined = await idb.get(encryptedKeyKey, this.store)
       // generate a new key for the user if no key exists (empty store)
       if (!encryptedKey) {
         encryptedKey = await crypto.genEncryptedMasterKey(this.passphrase)
         // store the new key since it's the first time
-        await idb.set('__key', encryptedKey, this.store)
+        await idb.set(encryptedKeyKey, encryptedKey, this.store)
       }
       // decrypt key so we can use it during this session
       this.encMasterKey = encryptedKey
@@ -55,7 +57,7 @@ class Store {
         throw new Error('No password to update set');
       }
       const encryptedKey = await crypto.updatePassphraseKey(oldPass, newPass, this.encMasterKey)
-      await idb.set('__key', encryptedKey, this.store)
+      await idb.set(encryptedKeyKey, encryptedKey, this.store)
       this.encMasterKey = encryptedKey
     } catch (e) {
       throw new Error(e.message)
@@ -81,8 +83,10 @@ class Store {
     return idb.del(key, this.store)
   }
 
-  keys (): Promise<IDBValidKey[]> {
-    return idb.keys(this.store)
+  async keys (): Promise<IDBValidKey[]> {
+    const keys = await idb.keys(this.store);
+    // Users of secure-webstore should not have to be aware of existence of __key.
+    return keys.filter(key => key !== encryptedKeyKey);
   }
 
   clear (): Promise<void> {
