@@ -15,25 +15,30 @@
         "type": "git",
         "url": "https://github.com/AkashaProject/secure-webstore.git"
     },
-    "main": "dist/secure-webstore.js",
-    "module": "src/secure-webstore.js",
+    "main": "dist/cjs/secure-webstore.js",
+    "module": "dist/esm/secure-webstore.js",
+    "files": [
+        "dist/"
+    ],
     "scripts": {
-        "build": "webpack -p",
+        "build": "npm run tsc && webpack -p",
         "test-only": "mocha-headless-chrome -f ./test/index.html",
-        "test": "npm run build && npm run test-only"
+        "test": "npm run build && npm run test-only",
+        "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json"
     },
     "dependencies": {
-        "easy-web-crypto": "^1.2.1"
+        "easy-web-crypto": "^1.2.4"
     },
     "devDependencies": {
+        "@types/node": "^14.14.37",
         "babel": "^6.23.0",
         "chai": "^4.2.0",
         "mocha": "^8.1.3",
         "mocha-headless-chrome": "^2.0.3",
         "standard": "^13.1.0",
         "ts-loader": "^8.0.2",
-        "typescript": "^3.9.7",
-        "webpack": "^4.39.2",
-        "webpack-cli": "^3.3.6"
+        "typescript": "^3.9.9",
+        "webpack": "^4.46.0",
+        "webpack-cli": "^3.3.12"
     }
 }
