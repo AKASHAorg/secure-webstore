@@ -20,7 +20,7 @@ Huge thanks to [@Jopie64](https://github.com/Jopie64) for Typescriptifying the s
 The init step takes care of key derivation and setting up the encryption/decryption key.
 
 ```js
-const Store = require('secure-webstore')
+const Store = require('secure-webstore').Store
 
 const store = new Store('some-store-name', 'super-secure-passphrase')
 
