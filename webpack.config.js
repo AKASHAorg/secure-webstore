@@ -14,7 +14,7 @@ module.exports = {
     ],
   },  
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist/cjs'),
     filename: 'secure-webstore.js',
     library: 'SecureStore',
     libraryTarget: 'umd',

@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* global chai */
 
-const Store = window.SecureStore.Store
+const SecStore = window.SecureStore.Store
 
 describe('Store', function () {
   context('API', async () => {
@@ -14,7 +14,7 @@ describe('Store', function () {
       let store
       let err
       try {
-        store = new Store()
+        store = new SecStore()
       } catch (error) {
         err = error
       }
@@ -22,7 +22,7 @@ describe('Store', function () {
       chai.assert.equal(err.message, 'Store name and passphrase required', 'Reject if no params are provided')
 
       try {
-        store = new Store(storeName, undefined)
+        store = new SecStore(storeName, undefined)
       } catch (error) {
         err = error
       }
@@ -30,7 +30,7 @@ describe('Store', function () {
       chai.assert.equal(err.message, 'Store name and passphrase required', 'Reject if no pass')
 
       try {
-        store = new Store(undefined, passphrase)
+        store = new SecStore(undefined, passphrase)
       } catch (error) {
         err = error
       }
@@ -42,7 +42,7 @@ describe('Store', function () {
       let err
       let store
       try {
-        store = new Store(storeName, passphrase)
+        store = new SecStore(storeName, passphrase)
         await store.init()
       } catch (error) {
         err = error
@@ -55,7 +55,7 @@ describe('Store', function () {
       let err
       let store
       try {
-        store = new Store(storeName, 'foo')
+        store = new SecStore(storeName, 'foo')
         await store.init()
       } catch (error) {
         err = error
@@ -65,7 +65,7 @@ describe('Store', function () {
     })
 
     it('Should successfully set an encrypted key/value pair', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       await store.set('one', data)
@@ -78,7 +78,7 @@ describe('Store', function () {
     })
 
     it('Should successfully get an non-existing key/value pair', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       chai.assert.isUndefined(await store.get('baz'))
@@ -86,7 +86,7 @@ describe('Store', function () {
     })
 
     it('Should successfully get an encrypted key/value pair', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       const dec = await store.get('one')
@@ -95,7 +95,7 @@ describe('Store', function () {
     })
 
     it('Should successfully list all keys in the store', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       const items = await store.keys() // [ 'one' ]
@@ -104,7 +104,7 @@ describe('Store', function () {
     })
 
     it('Should successfully call delete on a non-existent key from the store', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       await store.del('two')
@@ -115,7 +115,7 @@ describe('Store', function () {
     })
 
     it('Should successfully delete a key from the store', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       await store.del('one')
@@ -126,7 +126,7 @@ describe('Store', function () {
     })
 
     it('Should successfully clear the store', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       await store.clear()
@@ -137,7 +137,7 @@ describe('Store', function () {
     })
 
     it('Should successfully export data', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       await store.set('one', data)
@@ -152,7 +152,7 @@ describe('Store', function () {
     })
 
     it('Should fail to import data if none is provided', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       let err
@@ -181,7 +181,7 @@ describe('Store', function () {
     })
 
     it('Should successfully import data', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       const keys = await store.keys()
@@ -197,7 +197,7 @@ describe('Store', function () {
     })
 
     it('Should fail to updatePassphrase with wrong (previous) password', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       let err
@@ -211,7 +211,7 @@ describe('Store', function () {
     })
 
     it('Should successfully updatePassphrase with the new password and retrieve saved data', async () => {
-      const store = new Store(storeName, passphrase)
+      const store = new SecStore(storeName, passphrase)
       await store.init()
 
       await store.set('one', data)
@@ -226,7 +226,7 @@ describe('Store', function () {
     // This test times out in headless-chrome but works in the browser
 
     // it('Should successfully delete the store', async () => {
-    //   const store = new Store(storeName, newPass)
+    //   const store = new SecStore(storeName, newPass)
     //   await store.init()
 
     //   const before = await window.indexedDB.databases()
