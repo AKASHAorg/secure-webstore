@@ -13,6 +13,22 @@ a zero-dependency wrapper around the [Webcrypto API](https://caniuse.com/#search
 
 Huge thanks to [@Jopie64](https://github.com/Jopie64) for Typescriptifying the source!
 
+## Installing
+
+### Via npm
+
+```sh
+npm install --save secure-webstore
+```
+
+### Via `<script>` tag
+
+Either host `dist/cjs/secure-webstore.js` yourself or use a CDN (e.g. jsDelivr) like this:
+```html
+<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/secure-webstore@1.3.4/dist/cjs/secure-webstore.js"></script>
+```
+*You can then use `window.SecureStore` to access the library.*
+
 ## Usage
 
 ### Initialize
@@ -106,15 +122,3 @@ store.import(dump)
 ```
 
 That's it!
-
-## Installing
-
-### Via npm
-
-```sh
-npm install --save secure-webstore
-```
-
-### Via `<script>`
-
-* The `dist/secure-webstore.js` bundle can be directly used in browsers.
