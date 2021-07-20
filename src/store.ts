@@ -17,7 +17,7 @@ class Store {
     const db = await this._init()
 
     let ret: T | undefined
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(this.storeName, type)
       transaction.oncomplete = () => resolve()
       transaction.onabort = transaction.onerror = () => reject(transaction.error)

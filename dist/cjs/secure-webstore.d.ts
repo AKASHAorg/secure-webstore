@@ -23,7 +23,7 @@ declare class Store {
     clear(): Promise<void>;
     close(): void;
     destroy(): Promise<unknown>;
-    export(): Promise<Record<string | number, any>>;
+    export(): Promise<Dump>;
     import(data: Dump): Promise<void>;
 }
 declare const _idb: typeof idb;
