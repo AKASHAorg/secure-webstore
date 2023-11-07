@@ -36,7 +36,8 @@ Either host `dist/cjs/secure-webstore.js` yourself or use a CDN (e.g. jsDelivr) 
 The init step takes care of key derivation and setting up the encryption/decryption key.
 
 ```js
-const Store = require('secure-webstore').Store
+// Assuming you have loaded the secure-webstore module in your HTML file <script>
+const Store = window.SecureStore.Store
 
 const store = new Store('some-store-name', 'super-secure-passphrase')
 
