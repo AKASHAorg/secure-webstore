@@ -1,5 +1,7 @@
 # Secure-webstore
 
+> **Note:** Active development of this library continues in [deiu/secure-webstore](https://github.com/deiu/secure-webstore). The `secure-webstore` package on npm is published from that repository, starting with version 2.0.0.
+
 [![Build Status](https://api.travis-ci.org/AKASHAorg/secure-webstore.svg?branch=master)](https://travis-ci.org/AKASHAorg/secure-webstore)
 
 This is a secure, promise-based keyval store that encrypts data stored in IndexedDB.
